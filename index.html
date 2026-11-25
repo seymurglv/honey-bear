@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Медведь и мёд</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #20352c; }
+  #stage { position: fixed; inset: 0; overflow: hidden; }
+  .layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; will-change: transform; }
+  #vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(18, 28, 24, .45) 100%); }
+  #grain { position: absolute; inset: 0; pointer-events: none; opacity: .2; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- небо -->
+<svg class="layer" id="L-sky" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="skyG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="640">
+      <stop offset="0" stop-color="#5aa6d2"/><stop offset=".45" stop-color="#a6d5e4"/>
+      <stop offset=".8" stop-color="#fbe6b6"/><stop offset="1" stop-color="#ffd596"/>
+    </linearGradient>
+    <radialGradient id="sunGlow">
+      <stop offset="0" stop-color="#fffbe0" stop-opacity=".95"/><stop offset=".12" stop-color="#fff0b0" stop-opacity=".7"/>
+      <stop offset=".45" stop-color="#ffd98a" stop-opacity=".22"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mtFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93aecd"/><stop offset="1" stop-color="#cfd8d8"/>
+    </linearGradient>
+    <linearGradient id="mtNear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7498b0"/><stop offset="1" stop-color="#aec2ba"/>
+    </linearGradient>
+    <linearGradient id="hillG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5c9c74"/><stop offset="1" stop-color="#86b97c"/>
+    </linearGradient>
+    <linearGradient id="lakeG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffeec2"/><stop offset="1" stop-color="#a9dbe6"/>
+    </linearGradient>
+    <linearGradient id="groundG" gradientUnits="userSpaceOnUse" x1="0" y1="590" x2="0" y2="900">
+      <stop offset="0" stop-color="#d3e37c"/><stop offset=".25" stop-color="#9dca5a"/>
+      <stop offset=".65" stop-color="#69a544"/><stop offset="1" stop-color="#3d7c37"/>
+    </linearGradient>
+    <linearGradient id="fgFade" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="900">
+      <stop offset="0" stop-color="#1f4a2b" stop-opacity="0"/><stop offset="1" stop-color="#1f4a2b" stop-opacity=".75"/>
+    </linearGradient>
+    <radialGradient id="gShadow">
+      <stop offset="0" stop-color="#143a20" stop-opacity=".62"/><stop offset=".6" stop-color="#143a20" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#143a20" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- мех -->
+    <linearGradient id="furG" gradientUnits="userSpaceOnUse" x1="-240" y1="240" x2="220" y2="-400">
+      <stop offset="0" stop-color="#633a1b"/><stop offset=".45" stop-color="#8d5a2d"/>
+      <stop offset=".8" stop-color="#ad7740"/><stop offset="1" stop-color="#c79153"/>
+    </linearGradient>
+    <linearGradient id="furG2" gradientUnits="userSpaceOnUse" x1="-240" y1="240" x2="220" y2="-400">
+      <stop offset="0" stop-color="#7a4a25"/><stop offset=".45" stop-color="#9d6936"/>
+      <stop offset=".8" stop-color="#bd874a"/><stop offset="1" stop-color="#d29d5c"/>
+    </linearGradient>
+    <radialGradient id="headG" gradientUnits="userSpaceOnUse" cx="60" cy="-335" r="250">
+      <stop offset="0" stop-color="#d09b5d"/><stop offset=".45" stop-color="#a36d39"/><stop offset="1" stop-color="#6c411f"/>
+    </radialGradient>
+    <radialGradient id="pawG"><stop offset=".3" stop-color="#b47d45"/><stop offset="1" stop-color="#8e5b2d"/></radialGradient>
+    <radialGradient id="pawG2"><stop offset=".3" stop-color="#c88f51"/><stop offset="1" stop-color="#a06a36"/></radialGradient>
+    <radialGradient id="bellyG" cx=".6" cy=".3" r=".8">
+      <stop offset="0" stop-color="#f6dcae"/><stop offset=".6" stop-color="#e0b582"/><stop offset="1" stop-color="#c8935f"/>
+    </radialGradient>
+    <radialGradient id="muzzleG" cx=".6" cy=".28" r=".8">
+      <stop offset="0" stop-color="#fdebc9"/><stop offset=".6" stop-color="#ecc797"/><stop offset="1" stop-color="#d4a373"/>
+    </radialGradient>
+    <radialGradient id="padG" cx=".6" cy=".3" r=".8">
+      <stop offset="0" stop-color="#f3caa0"/><stop offset="1" stop-color="#c2855b"/>
+    </radialGradient>
+    <radialGradient id="innerEarG" cx=".5" cy=".7" r=".7">
+      <stop offset="0" stop-color="#96573a"/><stop offset="1" stop-color="#dba678"/>
+    </radialGradient>
+    <radialGradient id="noseG" cx=".38" cy=".28" r=".8">
+      <stop offset="0" stop-color="#5c3d30"/><stop offset=".5" stop-color="#2a1810"/><stop offset="1" stop-color="#150a05"/>
+    </radialGradient>
+    <linearGradient id="mouthG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a0e0d"/><stop offset="1" stop-color="#8a2a28"/>
+    </linearGradient>
+    <radialGradient id="blushG">
+      <stop offset="0" stop-color="#f77e68" stop-opacity=".85"/><stop offset=".6" stop-color="#f58a72" stop-opacity=".4"/>
+      <stop offset="1" stop-color="#f58a72" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="aoG">
+      <stop offset="0" stop-color="#341a07" stop-opacity=".55"/><stop offset=".55" stop-color="#341a07" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#341a07" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coreG" cx=".72" cy=".12" r="1.05">
+      <stop offset=".45" stop-color="#2d1505" stop-opacity="0"/><stop offset="1" stop-color="#2d1505" stop-opacity=".55"/>
+    </radialGradient>
+    <radialGradient id="rimWarmH" gradientUnits="userSpaceOnUse" cx="-34" cy="-236" r="178">
+      <stop offset=".74" stop-color="#ffe2b0" stop-opacity="0"/><stop offset="1" stop-color="#ffe6b8" stop-opacity=".62"/>
+    </radialGradient>
+    <radialGradient id="rimCoolH" gradientUnits="userSpaceOnUse" cx="44" cy="-304" r="196">
+      <stop offset=".8" stop-color="#a9d2ee" stop-opacity="0"/><stop offset="1" stop-color="#a9d2ee" stop-opacity=".3"/>
+    </radialGradient>
+    <radialGradient id="rimWarmB" gradientUnits="userSpaceOnUse" cx="-70" cy="70" r="292">
+      <stop offset=".8" stop-color="#ffe2b0" stop-opacity="0"/><stop offset="1" stop-color="#ffe6b8" stop-opacity=".5"/>
+    </radialGradient>
+    <radialGradient id="rimCoolB" gradientUnits="userSpaceOnUse" cx="80" cy="-30" r="318">
+      <stop offset=".82" stop-color="#a9d2ee" stop-opacity="0"/><stop offset="1" stop-color="#a9d2ee" stop-opacity=".26"/>
+    </radialGradient>
+
+    <!-- мёд и стекло -->
+    <linearGradient id="honeyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffb41c"/><stop offset=".5" stop-color="#f08f08"/><stop offset="1" stop-color="#b85a03"/>
+    </linearGradient>
+    <linearGradient id="honeyEdgeG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8a3f00" stop-opacity=".5"/><stop offset=".22" stop-color="#8a3f00" stop-opacity="0"/>
+      <stop offset=".78" stop-color="#8a3f00" stop-opacity="0"/><stop offset="1" stop-color="#8a3f00" stop-opacity=".42"/>
+    </linearGradient>
+    <radialGradient id="causticG">
+      <stop offset="0" stop-color="#ffe680" stop-opacity=".55"/><stop offset="1" stop-color="#ffd24a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="globG" cx=".62" cy=".3" r=".75">
+      <stop offset="0" stop-color="#ffe489"/><stop offset=".45" stop-color="#f9ae1f"/><stop offset="1" stop-color="#d27a05"/>
+    </radialGradient>
+    <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".2" stop-color="#fff" stop-opacity=".04"/>
+      <stop offset=".82" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity=".36"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+
+    <clipPath id="bodyClip"><path data-d="BODY"/></clipPath>
+    <clipPath id="headClip"><path data-d="HEAD"/></clipPath>
+    <clipPath id="bellyClip"><ellipse cx="0" cy="58" rx="126" ry="138"/></clipPath>
+    <clipPath id="jarClip"><path data-d="JAR"/></clipPath>
+    <clipPath id="bearClip">
+      <path data-d="BODY"/><path data-d="HEAD"/>
+      <ellipse cx="-150" cy="150" rx="105" ry="76" transform="rotate(-18 -150 150)"/>
+      <ellipse cx="150" cy="150" rx="105" ry="76" transform="rotate(18 150 150)"/>
+    </clipPath>
+    <clipPath id="tongueClip"><path d="M-90-214L-27-214Q-13-199 0-216Q13-199 27-214L90-214L90-30L-90-30Z"/></clipPath>
+  </defs>
+  <rect x="-200" y="-200" width="2000" height="1300" fill="url(#skyG)"/>
+  <circle cx="1230" cy="250" r="540" fill="url(#sunGlow)"/>
+  <circle cx="1230" cy="250" r="52" fill="#fffadf"/>
+</svg>
+
+<!-- облака -->
+<svg class="layer" id="L-clouds" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><g id="clouds"></g></svg>
+
+<!-- дальние горы -->
+<svg class="layer" id="L-mt" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <path fill="url(#mtFar)" d="M-200 640L-200 480L40 400L130 440L260 330L360 410L470 360L600 450L700 400L820 470L950 380L1060 300L1180 400L1290 350L1420 440L1540 380L1800 470L1800 640Z"/>
+  <g fill="#eef4f8" opacity=".9">
+    <path d="M260 330L306 368L284 376L264 360L242 380L226 359Z"/>
+    <path d="M1060 300L1112 357L1088 362L1066 344L1040 368L1016 338Z"/>
+    <path d="M950 380L986 404L966 412L950 400L930 416L916 404Z"/>
+    <path d="M1290 350L1330 384L1310 390L1292 376L1272 392L1254 372Z"/>
+    <path d="M470 360L506 394L488 398L470 386L452 400L438 383Z"/>
+  </g>
+  <path fill="url(#mtNear)" d="M-200 660L-200 530C-80 500 60 470 150 500C230 527 280 470 360 462C450 453 520 528 620 506C700 488 760 540 860 520C960 500 1100 470 1200 468C1300 466 1360 528 1460 500C1560 472 1700 520 1800 540L1800 660Z"/>
+</svg>
+
+<!-- холмы, лес, озеро -->
+<svg class="layer" id="L-hills" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <path fill="url(#hillG)" d="M-200 660L-200 560C0 525 250 590 420 560C600 525 720 585 900 565C1080 545 1200 505 1380 540C1500 565 1700 540 1800 550L1800 660Z"/>
+  <g id="pinesFar"></g>
+  <rect x="-200" y="592" width="2000" height="70" fill="url(#lakeG)"/>
+  <g stroke="#fff" stroke-linecap="round" opacity=".6">
+    <path d="M60 606h90M210 618h130M400 603h60M470 624h110M20 630h70" stroke-width="2.5"/>
+  </g>
+</svg>
+
+<!-- большие ели по краям -->
+<svg class="layer" id="L-pines" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><g id="pinesNear"></g></svg>
+
+<!-- поляна -->
+<svg class="layer" id="L-meadow" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <path fill="url(#groundG)" d="M-200 950L-200 640C100 632 380 650 640 628C900 606 1200 600 1800 592L1800 950Z"/>
+  <ellipse cx="1080" cy="700" rx="460" ry="56" fill="#f6f0a0" opacity=".22"/>
+  <g id="tufts"></g>
+</svg>
+
+<!-- медведь -->
+<svg class="layer" id="L-bear" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <ellipse cx="750" cy="806" rx="400" ry="46" fill="url(#gShadow)"/>
+  <g transform="translate(800 578)">
+  <g id="rock">
+    <g id="torso">
+      <path id="bodyShape" data-d="BODY" fill="url(#furG)"/>
+      <g id="furBody"></g>
+      <g clip-path="url(#bodyClip)">
+        <rect x="-230" y="-200" width="460" height="430" fill="url(#coreG)"/>
+        <ellipse cx="-12" cy="-150" rx="150" ry="70" fill="url(#aoG)"/>
+        <ellipse cx="-150" cy="118" rx="120" ry="78" fill="url(#aoG)" opacity=".8"/>
+        <ellipse cx="150" cy="118" rx="120" ry="78" fill="url(#aoG)" opacity=".6"/>
+        <rect x="-240" y="-200" width="480" height="440" fill="url(#rimWarmB)"/>
+        <rect x="-240" y="-200" width="480" height="440" fill="url(#rimCoolB)"/>
+      </g>
+      <ellipse id="bellyShape" cx="0" cy="58" rx="126" ry="138" fill="url(#bellyG)"/>
+      <g id="furBelly"></g>
+      <g clip-path="url(#bellyClip)">
+        <ellipse cx="-10" cy="-86" rx="130" ry="56" fill="url(#aoG)" opacity=".75"/>
+        <ellipse cx="-70" cy="170" rx="120" ry="60" fill="url(#aoG)" opacity=".5"/>
+      </g>
+      <!-- пушистая манишка под подбородком -->
+      <path fill="#c08a50" d="M-78-134L-58-104L-42-124L-22-96L0-120L22-96L42-124L58-104L78-134C40-156-40-156-78-134Z"/>
+      <path fill="#d7a368" opacity=".7" d="M-40-134L-28-112L-14-128L0-108L14-128L28-112L40-134C20-146-20-146-40-134Z"/>
+    </g>
+
+    <!-- задние лапы -->
+    <ellipse cx="-150" cy="160" rx="110" ry="80" transform="rotate(-18 -150 160)" fill="url(#aoG)"/>
+    <ellipse cx="150" cy="160" rx="110" ry="80" transform="rotate(18 150 160)" fill="url(#aoG)"/>
+    <ellipse id="thighL" cx="-150" cy="150" rx="105" ry="76" transform="rotate(-18 -150 150)" fill="url(#furG)"/>
+    <g id="furThighL"></g>
+    <ellipse id="thighR" cx="150" cy="150" rx="105" ry="76" transform="rotate(18 150 150)" fill="url(#furG)"/>
+    <g id="furThighR"></g>
+    <ellipse cx="-196" cy="150" rx="70" ry="80" fill="url(#aoG)" opacity=".7"/>
+    <ellipse cx="196" cy="150" rx="70" ry="80" fill="url(#aoG)" opacity=".55"/>
+    <g id="footL"><g>
+      <ellipse class="sole" rx="62" ry="76" fill="#6a3f20"/>
+      <ellipse rx="62" ry="76" fill="url(#coreG)" opacity=".6"/>
+      <ellipse cx="-2" cy="20" rx="38" ry="39" fill="#8a5631" opacity=".55"/>
+      <ellipse cy="16" rx="36" ry="37" fill="url(#padG)"/>
+      <path d="M-18 30Q0 40 18 30" fill="none" stroke="#a96d47" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+      <g fill="url(#padG)"><circle cx="-35" cy="-36" r="11.5"/><circle cx="-12" cy="-51" r="11.5"/><circle cx="12" cy="-51" r="11.5"/><circle cx="35" cy="-36" r="11.5"/></g>
+      <ellipse cx="8" cy="2" rx="14" ry="9" fill="#fff" opacity=".18"/>
+    </g></g>
+    <g id="footR"><g>
+      <ellipse class="sole" rx="62" ry="76" fill="#754826"/>
+      <ellipse rx="62" ry="76" fill="url(#coreG)" opacity=".35"/>
+      <ellipse cx="-2" cy="20" rx="38" ry="39" fill="#8a5631" opacity=".5"/>
+      <ellipse cy="16" rx="36" ry="37" fill="url(#padG)"/>
+      <path d="M-18 30Q0 40 18 30" fill="none" stroke="#a96d47" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+      <g fill="url(#padG)"><circle cx="-35" cy="-36" r="11.5"/><circle cx="-12" cy="-51" r="11.5"/><circle cx="12" cy="-51" r="11.5"/><circle cx="35" cy="-36" r="11.5"/></g>
+      <ellipse cx="8" cy="2" rx="14" ry="9" fill="#fff" opacity=".22"/>
+    </g></g>
+
+    <!-- голова -->
+    <g id="head">
+      <g id="earL">
+        <circle class="ear" cx="-104" cy="-358" r="44" fill="url(#headG)"/>
+        <circle cx="-104" cy="-354" r="26" fill="url(#innerEarG)"/>
+        <path d="M-121-336q5-13 2-25M-109-331q3-15 0-29M-96-333q0-14-5-25M-85-339q-2-10-7-18" fill="none" stroke="#edc692" stroke-width="3.2" stroke-linecap="round" opacity=".8"/>
+      </g>
+      <g id="earR">
+        <circle class="ear" cx="104" cy="-358" r="44" fill="url(#headG)"/>
+        <circle cx="104" cy="-354" r="26" fill="url(#innerEarG)"/>
+        <path d="M121-336q-5-13-2-25M109-331q-3-15 0-29M96-333q0-14 5-25M85-339q2-10 7-18" fill="none" stroke="#f6d4a0" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>
+        <path d="M118-398A44 44 0 0 1 147-352" fill="none" stroke="#ffe2b0" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+      </g>
+      <path id="cheeks" fill="url(#headG)" d="M-132-244L-156-228L-138-218L-152-198L-120-194ZM132-244L156-228L138-218L152-198L120-194ZM-18-382Q-10-408 1-389Q10-411 19-382Z"/>
+      <path id="headShape" data-d="HEAD" fill="url(#headG)"/>
+      <g id="furHead"></g>
+      <g clip-path="url(#headClip)">
+        <ellipse cx="-56" cy="-288" rx="36" ry="32" fill="url(#aoG)" opacity=".55"/>
+        <ellipse cx="54" cy="-288" rx="36" ry="32" fill="url(#aoG)" opacity=".4"/>
+        <ellipse cx="-6" cy="-210" rx="82" ry="60" fill="url(#aoG)" opacity=".6"/>
+        <rect x="-150" y="-400" width="300" height="260" fill="url(#rimWarmH)"/>
+        <rect x="-150" y="-400" width="300" height="260" fill="url(#rimCoolH)"/>
+      </g>
+      <ellipse id="muzzle" cx="0" cy="-222" rx="70" ry="54" fill="url(#muzzleG)"/>
+      <g id="furMuzzle"></g>
+      <ellipse cx="0" cy="-236" rx="34" ry="18" fill="url(#aoG)" opacity=".35"/>
+      <circle id="blushL" cx="-90" cy="-236" r="30" fill="url(#blushG)"/>
+      <circle id="blushR" cx="90" cy="-236" r="30" fill="url(#blushG)"/>
+      <g fill="#a8744a"><circle cx="-31" cy="-227" r="2.3"/><circle cx="-42" cy="-217" r="2.3"/><circle cx="-28" cy="-213" r="2.3"/>
+        <circle cx="31" cy="-227" r="2.3"/><circle cx="42" cy="-217" r="2.3"/><circle cx="28" cy="-213" r="2.3"/></g>
+      <path id="mouthOpen" fill="url(#mouthG)"/>
+      <ellipse id="tongueRoot" cx="0" rx="11" fill="#e8667e"/>
+      <path id="smile" fill="none" stroke="#2a1810" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="smudge" fill="url(#globG)" d="M-37-202q3-9 13-5q8 4 3 11q-6 7-13 1q-5-3-3-7z"/>
+      <path d="M0-240L0-216" stroke="#2a1810" stroke-width="3.6" stroke-linecap="round"/>
+      <g id="nose">
+        <path fill="url(#noseG)" d="M-24-262C-24-274 24-274 24-262C24-247 8-236 0-236C-8-236-24-247-24-262Z"/>
+        <ellipse cx="-7" cy="-264" rx="8" ry="3.4" fill="#fff" opacity=".55"/>
+        <path d="M-10-250q3 3 6 0M4-250q3 3 6 0" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+      </g>
+      <g id="eyeL" transform="translate(-54 -286)">
+        <g class="open"><ellipse rx="13.5" ry="15.5" fill="#1d0f08"/>
+          <path d="M-9 8Q0 15 9 8" fill="none" stroke="#8a5a2c" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>
+          <circle class="hl" cx="4.5" cy="-5.5" r="4.6" fill="#fff"/><circle cx="-4.5" cy="5.5" r="2" fill="#fff" opacity=".7"/></g>
+        <path class="lid" d="M-16-11Q0-23 16-11" fill="none" stroke="#5a3620" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <path class="happy" fill="none" stroke="#1d0f08" stroke-width="5.6" stroke-linecap="round"/>
+        <path class="crease" d="M-19 1l-8-4M-19 7l-9 1" fill="none" stroke="#5a3620" stroke-width="2.6" stroke-linecap="round"/>
+      </g>
+      <g id="eyeR" transform="translate(54 -286)">
+        <g class="open"><ellipse rx="13.5" ry="15.5" fill="#1d0f08"/>
+          <path d="M-9 8Q0 15 9 8" fill="none" stroke="#8a5a2c" stroke-width="2.6" stroke-linecap="round" opacity=".8"/>
+          <circle class="hl" cx="4.5" cy="-5.5" r="4.6" fill="#fff"/><circle cx="-4.5" cy="5.5" r="2" fill="#fff" opacity=".7"/></g>
+        <path class="lid" d="M-16-11Q0-23 16-11" fill="none" stroke="#5a3620" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <path class="happy" fill="none" stroke="#1d0f08" stroke-width="5.6" stroke-linecap="round"/>
+        <path class="crease" d="M19 1l8-4M19 7l9 1" fill="none" stroke="#5a3620" stroke-width="2.6" stroke-linecap="round"/>
+      </g>
+      <path id="browL" d="M-73-313Q-55-324-36-314" fill="none" stroke="#55321b" stroke-width="6" stroke-linecap="round"/>
+      <path id="browR" d="M36-314Q55-324 73-313" fill="none" stroke="#55321b" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
+    <!-- падающие тени от лап -->
+    <g id="armShadows" filter="url(#soft)" clip-path="url(#bearClip)" opacity=".5" stroke="#2a1304" stroke-linecap="round" stroke-width="66">
+      <line/><line/><line/><line/>
+    </g>
+
+    <!-- банка: задняя стенка и мёд -->
+    <g id="jarBack">
+      <ellipse cx="-16" cy="34" rx="96" ry="84" fill="url(#aoG)" opacity=".8"/>
+      <path data-d="JAR" fill="#fff" fill-opacity=".1"/>
+      <ellipse cx="0" cy="-88" rx="54" ry="12" fill="#fff" fill-opacity=".16" stroke="#fff" stroke-opacity=".7" stroke-width="3"/>
+      <path data-d="HONEY" fill="url(#honeyG)"/>
+      <path data-d="HONEY" fill="url(#honeyEdgeG)"/>
+      <ellipse cx="22" cy="40" rx="44" ry="34" fill="url(#causticG)"/>
+      <g fill="#ffe89a" opacity=".6"><circle cx="-30" cy="20" r="3.5"/><circle cx="-18" cy="48" r="2.2"/><circle cx="14" cy="6" r="2.6"/><circle cx="36" cy="58" r="3"/><circle cx="-40" cy="60" r="1.8"/><circle cx="44" cy="14" r="2"/></g>
+      <ellipse id="honeyTop" cx="0" cy="-32" rx="62" ry="10" fill="#ffcb3d"/>
+      <ellipse cx="10" cy="-34" rx="30" ry="3.4" fill="#fff3b8" opacity=".6"/>
+    </g>
+
+    <!-- правая лапа (ныряет в банку) -->
+    <g id="armR">
+      <path id="strand" fill="none" stroke="#f5a318" stroke-linecap="round"/>
+      <path id="strandHl" fill="none" stroke="#ffe07a" stroke-linecap="round"/>
+      <circle id="drop" r="6" fill="url(#globG)"/>
+      <line class="up" stroke="url(#furG2)" stroke-linecap="round" stroke-width="74"/>
+      <line class="up" stroke="#432309" stroke-opacity=".15" stroke-linecap="round" stroke-width="50"/>
+      <line class="up" stroke="#f0bf7e" stroke-opacity=".15" stroke-linecap="round" stroke-width="38"/>
+      <g class="upF"></g>
+      <line class="fo" stroke="url(#furG2)" stroke-linecap="round" stroke-width="66"/>
+      <line class="fo" stroke="#432309" stroke-opacity=".15" stroke-linecap="round" stroke-width="44"/>
+      <line class="fo" stroke="#f0bf7e" stroke-opacity=".15" stroke-linecap="round" stroke-width="32"/>
+      <g class="foF"></g>
+      <g id="pawR">
+        <circle r="37" fill="url(#pawG)"/>
+        <g class="pawF"></g>
+        <g fill="#f6e7cb"><ellipse cx="43" cy="-27" rx="6.5" ry="3.4" transform="rotate(-38 43 -27)"/><ellipse cx="50" cy="-9" rx="6.5" ry="3.4" transform="rotate(-12 50 -9)"/>
+          <ellipse cx="50" cy="9" rx="6.5" ry="3.4" transform="rotate(12 50 9)"/><ellipse cx="43" cy="27" rx="6.5" ry="3.4" transform="rotate(38 43 27)"/></g>
+        <g fill="url(#pawG)"><circle cx="27" cy="-25" r="12.5"/><circle cx="35" cy="-9" r="12.5"/><circle cx="35" cy="9" r="12.5"/><circle cx="27" cy="25" r="12.5"/></g>
+        <path d="M24-13q8-3 14-1M26 0h13M24 13q8 3 14 1" fill="none" stroke="#6b401f" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+        <g id="glob">
+          <path fill="url(#globG)" d="M4-35C30-52 64-31 62 0C64 31 30 52 4 35C16 12 16-12 4-35Z"/>
+          <path fill="#ffe489" opacity=".85" d="M20-31C39-38 54-23 55-6C45-18 33-25 20-31Z"/>
+          <ellipse cx="46" cy="-15" rx="5.5" ry="3" fill="#fff" opacity=".85" transform="rotate(40 46 -15)"/>
+          <circle cx="30" cy="20" r="2.4" fill="#fff" opacity=".5"/>
+        </g>
+      </g>
+      <path id="drip" fill="url(#globG)"/>
+    </g>
+
+    <!-- банка: передняя стенка -->
+    <g id="jarFront">
+      <path data-d="HONEY" fill="url(#honeyG)" opacity=".42"/>
+      <path d="M-62-32A62 10 0 0 0 62-32" fill="none" stroke="#ffe680" stroke-width="2.6" opacity=".9"/>
+      <path fill="url(#glassG)" stroke="#fff" stroke-opacity=".8" stroke-width="2.6" d="M-50-88L-50-74C-66-68-66-60-66-50L-66 56C-66 72-56 80-40 80L40 80C56 80 66 72 66 56L66-50C66-60 66-68 50-74L50-88"/>
+      <g clip-path="url(#jarClip)">
+        <g id="sheen" fill="#fff"><rect x="-12" y="-150" width="24" height="300" opacity=".17"/><rect x="20" y="-150" width="6" height="300" opacity=".12"/></g>
+      </g>
+      <path d="M-54 64Q0 80 54 64" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".38"/>
+      <path d="M-58 50Q-52 72-36 76" fill="none" stroke="#ffe9a0" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+      <path fill="#fff" opacity=".78" d="M-58-46C-62-10-62 30-56 56L-50 58C-55 30-55-10-51-48Z"/>
+      <path fill="#fff" opacity=".36" d="M-45-44C-48-14-48 20-44 46L-42 46C-45 20-45-14-42-44Z"/>
+      <path d="M-59-58Q-53-70-45-73" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round" opacity=".85"/>
+      <g fill="#fff" opacity=".42"><path d="M27-57l9 1.5v10l-9-1.5z"/><path d="M38-55l8 1.5v10l-8-1.5z"/></g>
+      <path d="M-54-88A54 12 0 0 0 54-88" fill="none" stroke="#fff" stroke-width="4.6" opacity=".95"/>
+      <path d="M-46-85A46 9 0 0 0 46-85" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>
+      <path d="M-51-80Q0-70 51-80" fill="none" stroke="#b88d55" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M-51-81Q0-71 51-81" fill="none" stroke="#e3c08a" stroke-width="2" stroke-linecap="round" stroke-dasharray="5 4"/>
+      <path fill="url(#globG)" d="M-43-86C-43-62-47-54-43-41C-39-30-29-34-31-51C-32-65-29-77-27-85Z"/>
+      <path d="M-39-76Q-41-60-38-48" fill="none" stroke="#fff3b8" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+      <!-- этикетка -->
+      <g transform="rotate(-3)">
+        <rect x="-52" y="-5" width="79" height="45" rx="5" fill="#6b4a22" opacity=".25"/>
+        <rect x="-54" y="-8" width="79" height="45" rx="5" fill="#f7e9c6" stroke="#b98a4a" stroke-width="1.8"/>
+        <rect x="-50" y="-4" width="71" height="37" rx="3" fill="none" stroke="#c9a36a" stroke-width="1" stroke-dasharray="3 3"/>
+        <g fill="none" stroke="#7a4a1e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M-47.5 3.4V23.2M-37.6 2.8V23.4M-47.5 13.4H-37.6"/>
+          <ellipse cx="-28" cy="13.2" rx="5.4" ry="10"/>
+          <path d="M-18.4 23.4V3.2L-8.6 23V2.8"/>
+          <path d="M5.6 3.2H-3.8V23.2H5.8M-3.8 13H3.6"/>
+          <path d="M10.4 2.8L15.4 13L20.6 3.2M15.4 13V23.4"/>
+        </g>
+        <path d="M-36 29.5h15M-6 29.5h15" stroke="#b98a4a" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="-13.5" cy="29.5" r="2" fill="#f5a318"/>
+      </g>
+      <path id="glint" fill="#fff" d="M0-11Q1.6-1.6 11 0Q1.6 1.6 0 11Q-1.6 1.6-11 0Q-1.6-1.6 0-11Z"/>
+    </g>
+
+    <!-- левая лапа (держит банку) -->
+    <g id="armL">
+      <line class="up" stroke="url(#furG2)" stroke-linecap="round" stroke-width="74"/>
+      <line class="up" stroke="#432309" stroke-opacity=".13" stroke-linecap="round" stroke-width="50"/>
+      <line class="up" stroke="#f6c888" stroke-opacity=".18" stroke-linecap="round" stroke-width="38"/>
+      <g class="upF"></g>
+      <line class="fo" stroke="url(#furG2)" stroke-linecap="round" stroke-width="66"/>
+      <line class="fo" stroke="#432309" stroke-opacity=".13" stroke-linecap="round" stroke-width="44"/>
+      <line class="fo" stroke="#f6c888" stroke-opacity=".18" stroke-linecap="round" stroke-width="32"/>
+      <g class="foF"></g>
+      <g id="pawL">
+        <circle cx="-3" cy="5" r="39" fill="#2a1304" opacity=".28"/>
+        <circle r="37" fill="url(#pawG2)"/>
+        <g class="pawF"></g>
+        <g fill="#f6e7cb"><ellipse cx="43" cy="-27" rx="6.5" ry="3.4" transform="rotate(-38 43 -27)"/><ellipse cx="50" cy="-9" rx="6.5" ry="3.4" transform="rotate(-12 50 -9)"/>
+          <ellipse cx="50" cy="9" rx="6.5" ry="3.4" transform="rotate(12 50 9)"/><ellipse cx="43" cy="27" rx="6.5" ry="3.4" transform="rotate(38 43 27)"/></g>
+        <g fill="url(#pawG2)"><circle cx="27" cy="-25" r="12.5"/><circle cx="35" cy="-9" r="12.5"/><circle cx="35" cy="9" r="12.5"/><circle cx="27" cy="25" r="12.5"/></g>
+        <path d="M24-13q8-3 14-1M26 0h13M24 13q8 3 14 1" fill="none" stroke="#6b401f" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- язык поверх лапы -->
+    <g id="tongueG"><g clip-path="url(#tongueClip)"><g id="tongue">
+      <path class="tb" fill="#ef6f86" stroke="#d4536e" stroke-width="1.6" stroke-linejoin="round"/>
+      <path class="th" fill="none" stroke="#ffa9b6" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+      <path class="tg" fill="none" stroke="#cf506c" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+      <circle class="thoney" r="8.5" fill="url(#globG)"/>
+    </g></g></g>
+
+    <g id="sparkles" fill="#fff6c4"></g>
+  </g>
+  </g>
+  <g id="seatGrass"></g>
+  <g id="fx"></g>
+</svg>
+
+<!-- передний план -->
+<svg class="layer" id="L-fg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <g id="fgPlants"></g>
+  <rect x="-300" y="800" width="2200" height="140" fill="url(#fgFade)"/>
+</svg>
+
+<div id="grain"></div>
+<div id="vignette"></div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg', D = Math.PI / 180, T = 10;
+const $ = id => document.getElementById(id), q = s => document.querySelector(s), f = v => v.toFixed(1);
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function rng(seed) {
+  return () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+const R = rng(11), rr = (a, b) => a + (b - a) * R();
+
+const PATHS = {
+  BODY: 'M-110-150C-150-120-215-10-205 100C-198 185-110 215 0 215C110 215 198 185 205 100C215-10 150-120 110-150C70-185-70-185-110-150Z',
+  HEAD: 'M-138-262C-140-335-85-386 0-386C85-386 140-335 138-262C137-215 118-180 80-162C50-150-50-150-80-162C-118-180-137-215-138-262Z',
+  JAR: 'M-50-88L-50-74C-66-68-66-60-66-50L-66 56C-66 72-56 80-40 80L40 80C56 80 66 72 66 56L66-50C66-60 66-68 50-74L50-88Z',
+  HONEY: 'M-62-32L-62 56C-62 70-54 76-40 76L40 76C54 76 62 70 62 56L62-32Z',
+};
+document.querySelectorAll('[data-d]').forEach(e => e.setAttribute('d', PATHS[e.dataset.d]));
+
+/* ---------- декорации ---------- */
+const clouds = [[260, 170, 1.3, 7], [720, 105, .9, 5], [1060, 205, 1.05, 6], [1500, 120, 1.4, 8], [1900, 235, 1, 5.5]].map(([x, y, s, v]) => {
+  const g = el('g', {}, $('clouds'));
+  for (const [cx, cy, rx, ry] of [[0, 0, 90, 28], [-50, -14, 52, 30], [10, -30, 62, 38], [62, -10, 48, 26]])
+    el('ellipse', { cx, cy, rx, ry, fill: '#fffaf0' }, g);
+  el('ellipse', { cx: 5, cy: 12, rx: 84, ry: 13, fill: '#f4c9a4', opacity: .5 }, g);
+  return { g, x, y, s, v };
+});
+
+function pine(g, x, y, h, dark, light) {
+  const w = h * .46;
+  el('rect', { x: x - h * .025, y: y - h * .14, width: h * .05, height: h * .14, fill: '#5b3b24' }, g);
+  for (let i = 0; i < 4; i++) {
+    const by = y - h * .1 - i * h * .2, tw = w * (1 - i * .21), top = by - h * .36;
+    el('path', { d: `M${x} ${top}L${x - tw / 2} ${by}L${x + tw / 2} ${by}Z`, fill: dark }, g);
+    el('path', { d: `M${x} ${top}L${x + tw / 2} ${by}L${x + tw * .12} ${by}Z`, fill: light }, g);
+  }
+}
+for (let x = -180; x < 1780; x += rr(15, 30))
+  pine($('pinesFar'), x, 592 + 8 * Math.sin(x / 170) + rr(-4, 8), rr(40, 88), '#3f7c66', '#5a9a7c');
+[[-30, 655, 470], [1630, 652, 455], [70, 648, 365], [1535, 646, 345], [170, 652, 300], [1440, 650, 290],
+ [262, 644, 228], [1350, 642, 214], [345, 646, 165], [1268, 640, 158]]
+  .forEach(([x, y, h]) => pine($('pinesNear'), x, y, h, '#2c6549', '#44895c'));
+
+for (let i = 0; i < 170; i++) {
+  const y = rr(648, 895), x = rr(-150, 1750), s = .5 + (y - 640) / 240 * 1.3;
+  if (R() < .62) {
+    el('path', { d: `M${x} ${y}q${-3 * s} ${-10 * s} ${-6 * s} ${-14 * s}M${x} ${y}q0 ${-12 * s} ${s} ${-18 * s}M${x} ${y}q${3 * s} ${-10 * s} ${7 * s} ${-13 * s}`,
+      fill: 'none', stroke: R() < .5 ? '#4d8d3a' : '#a9d466', 'stroke-width': 1.8 * s, 'stroke-linecap': 'round' }, $('tufts'));
+  } else {
+    const c = ['#ffffff', '#ffe36b', '#ffa6bd', '#ffffff'][i % 4];
+    el('circle', { cx: x, cy: y, r: 3.2 * s, fill: c }, $('tufts'));
+    el('circle', { cx: x, cy: y, r: 1.2 * s, fill: '#f2a91c' }, $('tufts'));
+  }
+}
+
+const plants = [];
+for (let x = -150; x < 1750; x += rr(20, 38)) {
+  const by = rr(905, 930), h = rr(70, 135), lean = rr(-14, 14), g = el('g', {}, $('fgPlants'));
+  if (R() < .68) {
+    const tx = x + lean, ty = by - h;
+    el('path', { d: `M${x} ${by}Q${x} ${by - h * .5} ${tx} ${ty}`, fill: 'none', stroke: '#3c7a3a', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    for (let k = 0; k < 8; k++) {
+      const u = 1 - k * .055, px = x + lean * u * u, py = by - h * u;
+      el('ellipse', { cx: px + (k % 2 ? 5 : -5), cy: py, rx: 6.5, ry: 4.4,
+        fill: ['#8e6fd1', '#a98be6', '#7458bd'][k % 3], transform: `rotate(${k % 2 ? 30 : -30} ${px} ${py})` }, g);
+    }
+    el('ellipse', { cx: tx, cy: ty - 4, rx: 4.5, ry: 6, fill: '#b9a0f0' }, g);
+  } else {
+    for (let k = 0; k < 4; k++) {
+      const bx = x + (k - 1.5) * 7, tx = bx + lean + (k - 1.5) * 9, hh = h * rr(.55, .95);
+      el('path', { d: `M${bx - 4} ${by}Q${bx} ${by - hh * .5} ${tx} ${by - hh}Q${bx + 5} ${by - hh * .5} ${bx + 4} ${by}Z`, fill: k % 2 ? '#2f6e33' : '#4a8f3f' }, g);
+    }
+  }
+  plants.push({ g, x, by, ph: rr(0, 6.28), amp: rr(2, 4.5) });
+}
+
+const bees = [{ cx: 905, cy: 600, ax: 170, ay: 78, fx: .9, fy: 1.7, ph: 0 }, { cx: 640, cy: 300, ax: 150, ay: 60, fx: .7, fy: 1.3, ph: 2 },
+  { cx: 1260, cy: 715, ax: 120, ay: 42, fx: 1.1, fy: 1.9, ph: 4 }].map(b => {
+  const g = el('g', {}, $('fx')), w = el('g', {}, g);
+  el('ellipse', { cx: -3, cy: -9, rx: 6, ry: 10, fill: '#fff', opacity: .78, transform: 'rotate(-25 -3 -9)' }, w);
+  el('ellipse', { cx: 4, cy: -9, rx: 5, ry: 9, fill: '#fff', opacity: .6, transform: 'rotate(15 4 -9)' }, w);
+  el('ellipse', { rx: 10, ry: 7, fill: '#f8b51d' }, g);
+  el('path', { d: 'M-4-6.3L-4 6.3M2-6.8L2 6.8', stroke: '#2a1a10', 'stroke-width': 3 }, g);
+  el('circle', { cx: 9.5, r: 5, fill: '#2a1a10' }, g);
+  return { ...b, g, w };
+});
+const motes = Array.from({ length: 28 }, () => ({
+  c: el('circle', { r: rr(1.4, 3.4), fill: '#fff6c9' }, $('fx')), x: rr(0, 1600), y: rr(150, 860), sp: rr(6, 16), ph: rr(0, 6.28) }));
+
+/* ---------- мех ---------- */
+const pt = $('L-bear').createSVGPoint();
+const inside = (s, x, y) => { pt.x = x; pt.y = y; return s.isPointInFill(pt); };
+
+// пушистый край: клочки шерсти вдоль контура, свисают вниз
+function fringe(shape, fill, step = 13, len = 8, flow = .7) {
+  const L = shape.getTotalLength(); let d = '';
+  for (let s = 0; s < L; s += step * rr(.7, 1.3)) {
+    const p = shape.getPointAtLength(s), p2 = shape.getPointAtLength((s + 1) % L);
+    let tx = p2.x - p.x, ty = p2.y - p.y; const m = Math.hypot(tx, ty) || 1; tx /= m; ty /= m;
+    let nx = ty, ny = -tx; if (inside(shape, p.x + nx * 3, p.y + ny * 3)) { nx = -nx; ny = -ny; }
+    const w = step * rr(.45, .7), l = len * rr(.6, 1.3);
+    d += `M${f(p.x - tx * w - nx * 2)} ${f(p.y - ty * w - ny * 2)}L${f(p.x + nx * l)} ${f(p.y + ny * l + flow * l)}L${f(p.x + tx * w - nx * 2)} ${f(p.y + ty * w - ny * 2)}Z`;
+  }
+  const e = el('path', { d, fill });
+  if (shape.hasAttribute('transform')) e.setAttribute('transform', shape.getAttribute('transform'));
+  shape.parentNode.insertBefore(e, shape);
+  return e;
+}
+// штрихи шерсти: тёмные в тени, светлые на свету (свет справа сверху)
+function fur(shape, target, n, [x0, y0, x1, y1], dir, dark, light, w = 2) {
+  const b = { d: '', l: '' };
+  for (let i = 0; i < n; i++) {
+    const x = rr(x0, x1), y = rr(y0, y1);
+    if (shape && !inside(shape, x, y)) continue;
+    let [dx, dy] = dir(x, y); const m = Math.hypot(dx, dy) || 1, l = rr(8, 17), k = rr(-.3, .3);
+    dx = dx / m * l; dy = dy / m * l;
+    const lit = (x - (x0 + x1) / 2) / (x1 - x0) - (y - (y0 + y1) / 2) / (y1 - y0) + rr(-.45, .45);
+    b[lit > 0 ? 'l' : 'd'] += `M${f(x)} ${f(y)}q${f(dx * .5 - dy * k)} ${f(dy * .5 + dx * k)} ${f(dx)} ${f(dy)}`;
+  }
+  const tfm = shape && shape.getAttribute('transform');
+  for (const [d, c] of [[b.d, dark], [b.l, light]]) {
+    const e = el('path', { d, fill: 'none', stroke: c[0], 'stroke-opacity': c[1], 'stroke-width': w, 'stroke-linecap': 'round' }, target);
+    if (tfm) e.setAttribute('transform', tfm);
+  }
+}
+const DARK = ['#43240c', .34], LIGHT = ['#edbd7c', .4];
+$('bodyClip').appendChild(fringe($('bodyShape'), 'url(#furG)', 14, 9).cloneNode());
+fur($('bodyShape'), $('furBody'), 620, [-215, -185, 215, 215], (x, y) => [x / 300, 1], DARK, LIGHT, 2.2);
+fringe($('bellyShape'), '#d6a56f', 12, 8, .5);
+fur($('bellyShape'), $('furBelly'), 260, [-126, -80, 126, 196], (x, y) => [x / 260, 1], ['#b07a48', .32], ['#fff4d6', .55], 2);
+fringe($('thighL'), 'url(#furG)', 14, 8);
+fur($('thighL'), $('furThighL'), 170, [-255, 74, -45, 226], () => [-.5, 1], DARK, LIGHT);
+fringe($('thighR'), 'url(#furG)', 14, 8);
+fur($('thighR'), $('furThighR'), 170, [45, 74, 255, 226], () => [.5, 1], DARK, LIGHT);
+document.querySelectorAll('.sole').forEach(s => fringe(s, s.getAttribute('fill'), 8, 4, .2));
+document.querySelectorAll('.ear').forEach(s => fringe(s, 'url(#headG)', 11, 6, 0));
+$('headClip').appendChild(fringe($('headShape'), 'url(#headG)', 12, 8, .5).cloneNode());
+$('headClip').appendChild($('cheeks').cloneNode());
+fur($('headShape'), $('furHead'), 560, [-138, -386, 138, -152], (x, y) => [x, (y + 236) + 40], DARK, LIGHT, 2.1);
+fringe($('muzzle'), '#deb382', 9, 5, .3);
+fur($('muzzle'), $('furMuzzle'), 110, [-70, -276, 70, -168], (x, y) => [x, (y + 240) + 14], ['#c08c5a', .3], ['#fff7e0', .55], 1.7);
+document.querySelectorAll('.upF,.foF').forEach(g => {
+  const r = g.classList.contains('upF') ? 34 : 30;
+  fur(null, g, 60, [3, -r, 88, r], () => [1, rr(-.35, .35)], ['#43240c', .3], ['#f3c483', .36], 2);
+});
+document.querySelectorAll('.pawF').forEach(g => fur(null, g, 34, [-30, -28, 14, 28], () => [1, rr(-.4, .4)], ['#43240c', .28], ['#f3c483', .36], 1.9));
+
+// трава перед медведем, чтобы он сидел «в» поляне
+for (let x = 410; x < 1180; x += rr(6, 13)) {
+  const y = 808 + rr(-8, 16), h = rr(12, 32), lean = rr(-8, 8);
+  el('path', { d: `M${f(x - 2.6)} ${f(y)}Q${f(x + lean * .3)} ${f(y - h * .6)} ${f(x + lean)} ${f(y - h)}Q${f(x + lean * .5 + 2)} ${f(y - h * .5)} ${f(x + 2.6)} ${f(y)}Z`,
+    fill: ['#4f9440', '#6fb04e', '#3f7f38', '#8cc55c'][Math.floor(R() * 4)] }, $('seatGrass'));
+}
+const STAR = 'M0-12Q1.8-1.8 12 0Q1.8 1.8 0 12Q-1.8 1.8-12 0Q-1.8-1.8 0-12Z';
+const sparkles = [[-172, -402, 1.3, 0], [178, -374, 1, .18], [130, -452, .8, .36], [-124, -458, .9, .52], [206, -300, .7, .66]]
+  .map(([x, y, s, d]) => ({ e: el('path', { d: STAR }, $('sparkles')), x, y, s, d }));
+
+/* ---------- анимация ---------- */
+const lerp = (a, b, u) => a + (b - a) * u, clamp = u => Math.max(0, Math.min(1, u));
+const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+const EASE = { i: u => u * u, o: u => 1 - (1 - u) * (1 - u) };
+function tr(t, keys) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) {
+    const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+    return lerp(v0, v1, ease((t - t0) / (t1 - t0)));
+  }
+  return keys[keys.length - 1][1];
+}
+const pulse = (t, c, w) => Math.max(0, 1 - Math.abs(t - c) / w);
+const mix = (a, b, u) => ({ x: lerp(a.x, b.x, u), y: lerp(a.y, b.y, u) });
+
+// фазы цикла: покой → тянется → ныряет в банку → достаёт → облизывает → смакует → покой
+const SEQ = [[0, 'rest'], [1.5, 'rest'], [1.95, 'pre', 'i'], [2.35, 'above', 'o'], [2.9, 'in'], [3.5, 'in'], [4.1, 'above'],
+  [4.9, 'lick'], [7.4, 'lick'], [7.9, 'savor'], [8.5, 'savor'], [9.3, 'rest'], [T, 'rest']];
+function poseAt(t, poses) {
+  for (let i = 1; i < SEQ.length; i++) if (t <= SEQ[i][0]) {
+    const a = SEQ[i - 1], b = SEQ[i], u = (EASE[b[2]] || ease)((t - a[0]) / (b[0] - a[0]));
+    return { E: mix(poses[a[1]].E, poses[b[1]].E, u), P: mix(poses[a[1]].P, poses[b[1]].P, u) };
+  }
+  return poses.rest;
+}
+
+const PAR = [['L-clouds', .08], ['L-mt', .15], ['L-hills', .3], ['L-pines', .55], ['L-meadow', 1], ['L-bear', 1], ['L-fg', 1.8]]
+  .map(([id, k]) => [$(id), k]);
+const arm = id => ({ up: [...document.querySelectorAll(`#${id} line.up`)], fo: [...document.querySelectorAll(`#${id} line.fo`)],
+  upF: q(`#${id} .upF`), foF: q(`#${id} .foF`) });
+const E = { rock: $('rock'), torso: $('torso'), head: $('head'), tongueG: $('tongueG'), tongue: $('tongue'), earL: $('earL'), earR: $('earR'),
+  footL: $('footL'), footR: $('footR'), jarBack: $('jarBack'), jarFront: $('jarFront'), honeyTop: $('honeyTop'), pawR: $('pawR'), pawL: $('pawL'),
+  glob: $('glob'), strand: $('strand'), strandHl: $('strandHl'), drop: $('drop'), drip: $('drip'), smile: $('smile'), mouthOpen: $('mouthOpen'),
+  tongueRoot: $('tongueRoot'), smudge: $('smudge'), nose: $('nose'), blushL: $('blushL'), blushR: $('blushR'), browL: $('browL'), browR: $('browR'),
+  sheen: $('sheen'), glint: $('glint'), shadows: [...document.querySelectorAll('#armShadows line')],
+  tb: q('#tongue .tb'), th: q('#tongue .th'), tg: q('#tongue .tg'), thoney: q('#tongue .thoney'),
+  eyes: ['#eyeL', '#eyeR'].map(s => ({ open: q(s + ' .open'), happy: q(s + ' .happy'), hl: q(s + ' .hl'), crease: q(s + ' .crease') })),
+  armR: arm('armR'), armL: arm('armL') };
+const S1 = { x: -128, y: -112 }, S2 = { x: 128, y: -112 };
+
+function setLine(l, a, b, dx, dy) {
+  l.setAttribute('x1', f(a.x + dx)); l.setAttribute('y1', f(a.y + dy)); l.setAttribute('x2', f(b.x + dx)); l.setAttribute('y2', f(b.y + dy));
+}
+const OFF = [[0, 0], [-6, 8], [6, -8]];   // основа, теневая сторона, освещённая сторона
+function limb(A, S, El, P, sh1, sh2) {
+  A.up.forEach((l, i) => setLine(l, S, El, ...OFF[i])); A.fo.forEach((l, i) => setLine(l, El, P, ...OFF[i]));
+  const seg = (g, a, b) => g.setAttribute('transform',
+    `translate(${f(a.x)} ${f(a.y)}) rotate(${f(Math.atan2(b.y - a.y, b.x - a.x) / D)}) scale(${(Math.hypot(b.x - a.x, b.y - a.y) / 92).toFixed(3)} 1)`);
+  seg(A.upF, S, El); seg(A.foF, El, P);
+  setLine(sh1, S, El, -12, 18); setLine(sh2, El, P, -12, 18);
+}
+
+function render(time) {
+  const t = ((time % T) + T) % T;
+  const sc = Math.max(innerWidth / 1600, innerHeight / 900), cam = Math.sin(time * .22) * 14;
+  for (const [n, k] of PAR) n.style.transform = `translate3d(${(-cam * k * sc).toFixed(2)}px,0,0)`;
+
+  // окружение
+  for (const c of clouds) c.g.setAttribute('transform', `translate(${((c.x + time * c.v) % 2300 + 2300) % 2300 - 350} ${c.y}) scale(${c.s})`);
+  for (const p of plants) p.g.setAttribute('transform', `rotate(${(Math.sin(time * 1.1 + p.ph) * p.amp + Math.sin(time * .37 + p.x * .01) * 2).toFixed(2)} ${p.x} ${p.by})`);
+  for (const b of bees) {
+    const a = time * b.fx + b.ph, x = b.cx + b.ax * Math.sin(a), y = b.cy + b.ay * Math.sin(time * b.fy + b.ph) + Math.sin(time * 11 + b.ph) * 3;
+    b.g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${Math.cos(a) < 0 ? -1 : 1} 1)`);
+    b.w.setAttribute('transform', `scale(1 ${(.35 + .65 * Math.abs(Math.sin(time * 42 + b.ph))).toFixed(2)})`);
+  }
+  for (const m of motes) {
+    m.c.setAttribute('cx', m.x + 22 * Math.sin(time * .3 + m.ph));
+    m.c.setAttribute('cy', 880 - ((880 - m.y + time * m.sp) % 760));
+    m.c.setAttribute('opacity', .25 + .45 * (.5 + .5 * Math.sin(time * 1.7 + m.ph)));
+  }
+
+  // облизывание: три раза по 0.8 c — язык выходит, тянет мёд вверх, прячется
+  let tl = 0, ta = 0, curl = 0, nod = 0, pawBob = 0, onTongue = 0, lickTilt = 0, sq = 0, h = t >= 3 && t < 5 ? 1 : 0;
+  if (t >= 5 && t < 7.4) {
+    const k = Math.floor((t - 5) / .8), p = (t - 5) / .8 - k, arc = Math.sin(Math.PI * clamp(p / .88));
+    tl = p < .22 ? ease(p / .22) : p < .62 ? 1 - .28 * ease((p - .22) / .4) : p < .86 ? .72 * (1 - ease((p - .62) / .24)) : 0;
+    ta = tr(p, [[0, -15], [.22, -15], [.62, 13], [1, 13]]);
+    curl = tr(p, [[0, 0], [.22, .3], [.62, 1], [.86, .4], [1, 0]]);
+    nod = tr(p, [[0, 0], [.22, 11], [.62, -9], [.88, 0], [1, 0]]);
+    pawBob = tr(p, [[0, 0], [.22, -7], [.62, 9], [.88, 0], [1, 0]]);
+    onTongue = tr(p, [[0, 0], [.3, 0], [.5, 1], [.8, 1], [.86, 0], [1, 0]]);
+    lickTilt = [-4, 4, -6][k] * arc; sq = arc;
+    h = 1 - (k + ease(clamp((p - .25) / .35))) / 3;
+  }
+  if (t >= 7.5 && t < 8.5) { // облизывает губы
+    const u = t - 7.5;
+    tl = .46 * clamp(Math.min(u, 1 - u) / .12);
+    ta = -40 * Math.sin(u * 2 * Math.PI / .5);
+  }
+  const hp = tr(t, [[0, 0], [4.8, 0], [5.1, 1], [8.5, 1], [9.2, 0], [T, 0]]);       // блаженство
+  const wide = tr(t, [[0, 0], [3.4, 0], [3.8, 1], [4.6, 1], [4.9, 0], [T, 0]]);     // глаза загорелись
+  const joy = tr(t, [[0, 0], [5, 0], [5.4, 1], [8.3, 1], [8.8, 0], [T, 0]]);
+  const shiver = pulse(t, 7.5, .2) * Math.sin((t - 7.3) * 2 * Math.PI * 11);        // дрожь удовольствия
+
+  // банка: наклоняется навстречу лапе
+  const tilt = tr(t, [[0, -4], [1.5, -4], [2.4, -19], [4.1, -19], [5, -4], [T, -4]]) + Math.sin(time * 1.3) * .6;
+  const jc = { x: 25, y: 95 + tr(t, [[0, 0], [1.5, 0], [2.4, -8], [4.1, -8], [5, 0], [T, 0]]) };
+  const ca = Math.cos(tilt * D), sa = Math.sin(tilt * D);
+  const jar = (x, y) => ({ x: jc.x + 1.15 * (x * ca - y * sa), y: jc.y + 1.15 * (x * sa + y * ca) });
+  const jt = `translate(${jc.x} ${jc.y.toFixed(2)}) rotate(${tilt.toFixed(2)}) scale(1.15)`;
+  E.jarBack.setAttribute('transform', jt); E.jarFront.setAttribute('transform', jt);
+  const rip = Math.max(pulse(t, 2.95, .5), pulse(t, 5.0, .3));
+  E.honeyTop.setAttribute('ry', 10 + 3 * rip * Math.sin(time * 18));
+  E.sheen.setAttribute('transform', `translate(${f(lerp(30, -36, (-tilt - 4) / 15))} 0) rotate(18)`);   // блик ползёт по стеклу
+  const tw = Math.pow(Math.max(0, Math.sin(time * 1.9)), 10);
+  E.glint.setAttribute('transform', `translate(-52 -80) rotate(${f(time * 50)}) scale(${(.25 + 1.1 * tw).toFixed(3)})`);
+  E.glint.setAttribute('opacity', .35 + .65 * tw);
+
+  // правая лапа
+  const scoop = t > 2.9 && t < 3.5 ? Math.sin((t - 2.9) * 2 * Math.PI / .3) * 6 : 0;
+  const br = Math.sin(time * 1.9);
+  const pose = poseAt(t, {
+    rest: { E: { x: -184, y: -6 + br }, P: { x: -152, y: 98 + br * .5 } },
+    pre: { E: { x: -172, y: -60 }, P: { x: -92, y: -30 } },
+    above: { E: jar(-10, -238), P: jar(0, -138) },
+    in: { E: jar(-10 + scoop * .4, -112), P: jar(scoop, -6) },
+    lick: { E: { x: -88 - lickTilt, y: -36 }, P: { x: -30, y: -130 + pawBob } },
+    savor: { E: { x: -104, y: -22 }, P: { x: -52, y: -112 } },
+  });
+  limb(E.armR, S1, pose.E, pose.P, E.shadows[0], E.shadows[1]);
+  const pa = Math.atan2(pose.P.y - pose.E.y, pose.P.x - pose.E.x);
+  E.pawR.setAttribute('transform', `translate(${pose.P.x.toFixed(2)} ${pose.P.y.toFixed(2)}) rotate(${(pa / D).toFixed(2)})`);
+  E.glob.setAttribute('transform', `translate(30 0) scale(${(.3 + .7 * h).toFixed(3)}) translate(-30 0)`);
+  E.glob.setAttribute('opacity', h > .02 ? 1 : 0);
+
+  // нить мёда, капля и подтёк на лапе
+  const tip = { x: pose.P.x + Math.cos(pa) * 44, y: pose.P.y + Math.sin(pa) * 44 }, surf = jar(0, -30);
+  if (t > 3.45 && t < 4.75) {
+    const d = `M${f(tip.x)} ${f(tip.y)}Q${f((tip.x + surf.x) / 2 + 6)} ${f((tip.y + surf.y) / 2 + 10)} ${f(surf.x)} ${f(surf.y)}`;
+    const w = tr(t, [[3.45, 18], [4.0, 9], [4.5, 3.5], [4.75, 1]]), o = tr(t, [[3.45, 1], [4.55, 1], [4.75, 0]]);
+    E.strand.setAttribute('d', d); E.strand.setAttribute('stroke-width', w); E.strand.setAttribute('opacity', o);
+    E.strandHl.setAttribute('d', d); E.strandHl.setAttribute('stroke-width', w * .3); E.strandHl.setAttribute('opacity', o * .8);
+  } else { E.strand.setAttribute('opacity', 0); E.strandHl.setAttribute('opacity', 0); }
+  if (t > 4.6 && t < 5.0) {
+    const u = (t - 4.6) / .4, d = mix(tip, surf, u * u);
+    E.drop.setAttribute('cx', d.x); E.drop.setAttribute('cy', d.y); E.drop.setAttribute('opacity', 1);
+  } else E.drop.setAttribute('opacity', 0);
+  if (t > 4.2 && t < 7.3 && h > .2) {
+    const x = pose.P.x + Math.cos(pa) * 26 - 16, y = pose.P.y + Math.sin(pa) * 26 + 20 * h, l = (9 + 7 * (.5 + .5 * Math.sin(time * 3.1))) * h;
+    E.drip.setAttribute('d', `M${f(x - 4.5)} ${f(y - 8)}Q${f(x - 6)} ${f(y + l)} ${f(x)} ${f(y + l + 5)}Q${f(x + 6)} ${f(y + l)} ${f(x + 4.5)} ${f(y - 8)}Z`);
+    E.drip.setAttribute('opacity', 1);
+  } else E.drip.setAttribute('opacity', 0);
+
+  // левая лапа держит банку
+  const P2 = jar(66, 34), E2 = { x: 190, y: 2 + br };
+  limb(E.armL, S2, E2, P2, E.shadows[2], E.shadows[3]);
+  E.pawL.setAttribute('transform', `translate(${P2.x.toFixed(2)} ${P2.y.toFixed(2)}) rotate(${(Math.atan2(P2.y - E2.y, P2.x - E2.x) / D + 12).toFixed(2)})`);
+
+  // голова
+  const sway = tr(t, [[0, 0], [7.4, 0], [7.7, 1], [8.4, 1], [8.8, 0], [T, 0]]) * Math.sin((t - 7.4) * 2 * Math.PI / .9) * 5;
+  const hr = tr(t, [[0, 0], [1.5, 0], [2.4, 6], [3.5, 6], [4.1, -2], [4.9, -5], [7.4, -5], [7.8, 0], [T, 0]])
+    + sway + lickTilt + shiver * 2.6 + Math.sin(time * .8) * 1.2;
+  const hy = tr(t, [[0, 0], [1.5, 0], [2.4, 10], [3.5, 10], [4.1, -6], [4.9, 2], [7.4, 2], [7.9, -4], [9, 0], [T, 0]]) + nod + br * 1.5;
+  const ht = `rotate(${hr.toFixed(2)} 0 -160) translate(0 ${hy.toFixed(2)})`;
+  E.head.setAttribute('transform', ht); E.tongueG.setAttribute('transform', ht);
+
+  // рот и язык
+  const mo = tr(t, [[0, 0], [3.5, 0], [3.9, .45], [4.5, .45], [4.9, 1], [7.4, 1], [7.6, .5], [8.5, .5], [8.8, 0], [T, 0]]);
+  const c = 2 + 5 * hp, md = 27 * mo, my = -211 - c * .5;
+  E.smile.setAttribute('d', `M-28 ${f(-212 - c)}Q-13 -199 0 -216Q13 -199 28 ${f(-212 - c)}`);
+  E.mouthOpen.setAttribute('d', `M-21 ${f(my)}Q-11 -202 0 -214Q11 -202 21 ${f(my)}Q27 ${f(my + md * .9)} 0 ${f(my + md * 1.2)}Q-27 ${f(my + md * .9)} -21 ${f(my)}Z`);
+  E.mouthOpen.setAttribute('opacity', mo > .05 ? 1 : 0);
+  E.tongueRoot.setAttribute('cy', f(my + md * .92)); E.tongueRoot.setAttribute('ry', f(6.5 * mo));
+  E.tongueRoot.setAttribute('opacity', mo > .05 && tl < .1 ? 1 : 0);
+  if (tl > .02) {
+    const L = 58 * tl, a = ta * D, bx = 0, by = -201 + 4 * mo, dx = Math.sin(a), dy = Math.cos(a);
+    const tx = bx + dx * L, ty = by + dy * L, cx = bx + dx * L * .55 + dy * curl * 9, cy = by + dy * L * .55 - dx * curl * 9 - curl * 3;
+    const d = `M${f(bx)} ${f(by)}Q${f(cx)} ${f(cy)} ${f(tx)} ${f(ty)}`;
+    const Lp = [], Rp = []; let end;
+    for (let i = 0; i <= 8; i++) {
+      const u = i / 8, v = 1 - u, x = v * v * bx + 2 * v * u * cx + u * u * tx, y = v * v * by + 2 * v * u * cy + u * u * ty;
+      let ex = v * (cx - bx) + u * (tx - cx), ey = v * (cy - by) + u * (ty - cy); const m = Math.hypot(ex, ey) || 1; ex /= m; ey /= m;
+      const hw = lerp(16, 11.5, u);
+      Lp.push(f(x - ey * hw) + ' ' + f(y + ex * hw)); Rp.unshift(f(x + ey * hw) + ' ' + f(y - ex * hw));
+      if (i === 8) end = f(x + ex * 17) + ' ' + f(y + ey * 17);
+    }
+    E.tb.setAttribute('d', `M${Lp.join('L')}Q${end} ${Rp.join('L')}Z`); E.tg.setAttribute('d', d);
+    E.th.setAttribute('d', `M${f(bx + 4)} ${f(by + 3)}Q${f(cx + 4)} ${f(cy)} ${f(tx + 3)} ${f(ty - 4)}`);
+    E.thoney.setAttribute('cx', f(tx)); E.thoney.setAttribute('cy', f(ty)); E.thoney.setAttribute('opacity', onTongue);
+    E.tongue.setAttribute('opacity', 1);
+  } else E.tongue.setAttribute('opacity', 0);
+  E.smudge.setAttribute('opacity', tr(t, [[0, 0], [5.5, 0], [5.7, 1], [7.56, 1], [7.68, 0], [T, 0]]));   // мазок мёда у рта, слизывает в конце
+  const sniff = wide * Math.sin(time * 26) * .05;
+  E.nose.setAttribute('transform', `translate(0 -255) scale(${(1 + sniff).toFixed(3)} ${(1 - sniff).toFixed(3)}) translate(0 255)`);
+
+  // глаза, брови, щёки
+  const blink = Math.max(pulse(t, .8, .09), pulse(t, 2.05, .09), pulse(t, 9.7, .09));
+  const lx = tr(t, [[0, 0], [.3, 2], [3.5, 3], [4.1, -3], [4.9, -3], [9, 0], [T, 0]]);
+  const ly = tr(t, [[0, 0], [.3, 5], [1.5, 5], [2.4, 7], [3.5, 7], [4.1, -2], [4.9, 2], [9.2, 0], [T, 0]]);
+  for (const e of E.eyes) {
+    e.open.setAttribute('transform', `translate(${lx.toFixed(2)} ${ly.toFixed(2)}) scale(${1 + .14 * wide} ${((1 - blink) * (1 - hp) * (1 + .2 * wide)).toFixed(3)})`);
+    e.open.setAttribute('opacity', hp < .92 ? 1 : 0);
+    e.hl.setAttribute('r', 4.6 + 2.2 * wide);
+    e.happy.setAttribute('d', `M-16 ${f(5 + sq)}Q0 ${f(-13 - 6 * sq)} 16 ${f(5 + sq)}`);
+    e.happy.setAttribute('opacity', hp);
+    e.crease.setAttribute('opacity', hp * (.35 + .65 * sq) * .75);
+  }
+  const by2 = -10 * wide - 5 * hp - 4 * sq;
+  E.browL.setAttribute('transform', `translate(0 ${f(by2)}) rotate(${f(-9 * hp - 4 * sq)} -54 -314)`);
+  E.browR.setAttribute('transform', `translate(0 ${f(by2)}) rotate(${f(9 * hp + 4 * sq)} 54 -314)`);
+  for (const [b, x] of [[E.blushL, -90], [E.blushR, 90]]) {
+    b.setAttribute('transform', `translate(${x} ${f(-236 - 7 * hp - 3 * sq)}) scale(${(1 + .22 * hp).toFixed(3)}) translate(${-x} 236)`);
+    b.setAttribute('opacity', .4 + .6 * hp);
+  }
+  const twitch = 14 * (pulse(t, 1.1, .12) + pulse(t, 6.3, .12)), perk = 7 * wide + 4 * joy * Math.sin(time * 6) + shiver * 6;
+  E.earL.setAttribute('transform', `rotate(${(-twitch - perk).toFixed(2)} -90 -330)`);
+  E.earR.setAttribute('transform', `rotate(${perk.toFixed(2)} 90 -330)`);
+
+  // искорки удовольствия
+  for (const s of sparkles) {
+    const u = clamp((t - 7.45 - s.d) / .9), k = Math.sin(Math.PI * u);
+    s.e.setAttribute('transform', `translate(${s.x} ${f(s.y - 14 * u)}) rotate(${f(40 * u)}) scale(${(s.s * k).toFixed(3)})`);
+    s.e.setAttribute('opacity', k);
+  }
+
+  // тело: дыхание, довольный вздох, покачивание, шевелит пятками
+  const sigh = t > 8.7 && t < 9.6 ? Math.sin((t - 8.7) / .9 * Math.PI) * .035 : 0;
+  E.torso.setAttribute('transform', `translate(0 215) scale(${1 + .006 * br + sigh * .5} ${1 + .012 * br + sigh}) translate(0 -215)`);
+  E.rock.setAttribute('transform', `rotate(${(joy * 1.8 * Math.sin((t - 5) * 2 * Math.PI / 1.6)).toFixed(2)} 0 215)`);
+  E.footL.setAttribute('transform', `translate(-212 160) rotate(${(-16 + joy * 7 * Math.sin(time * 7)).toFixed(2)} 0 60)`);
+  E.footR.setAttribute('transform', `translate(212 160) rotate(${(16 + joy * 7 * Math.sin(time * 7 + 1.6)).toFixed(2)} 0 60)`);
+}
+
+// ?t=5.4 — застывший кадр на этой секунде цикла
+const frozen = new URLSearchParams(location.search).get('t');
+if (frozen !== null) { render(parseFloat(frozen)); addEventListener('resize', () => render(parseFloat(frozen))); }
+else requestAnimationFrame(function loop(now) { render(now / 1000); requestAnimationFrame(loop); });
+</script>
+</body>
+</html>
